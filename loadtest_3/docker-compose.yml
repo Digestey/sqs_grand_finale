@@ -1,0 +1,64 @@
+version: '3.1'
+
+services:
+
+  k6:
+    build: src/test/local
+    volumes:
+      - type: bind
+        source: ./src/test/scripts
+        target: /home/k6/scripts
+        read_only: true
+      - type: bind
+        source: ./src/test/data
+        target: /home/k6/data
+        read_only: true
+    networks:
+      - advanced-testing-network
+
+  webshop:
+    build: ../slightly-brittle-webshop/src/test/local/exec
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://webshop-db:5432/postgres
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=mysecretpassword
+    ports:
+      - "8080:8080"
+      - "9090:9090" # remote debugging port
+    volumes:
+      - ../slightly-brittle-webshop/target:/job:ro
+    depends_on:
+      - webshop-db
+    networks:
+      - advanced-testing-network
+
+  webshop-db:
+    image: postgres:14.5
+    environment:
+      - "POSTGRES_PASSWORD=mysecretpassword"
+    ports:
+      - "5432:5432"
+    networks:
+      - advanced-testing-network
+
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    networks:
+      - advanced-testing-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "4000:3000"
+    user: "0"
+    depends_on:
+      - influxdb
+    networks:
+      - advanced-testing-network
+
+networks:
+  advanced-testing-network:
+    driver: bridge

@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: sqs_testing
+
+
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/database
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
