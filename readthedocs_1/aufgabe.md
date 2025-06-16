@@ -11,14 +11,14 @@
 
 1. Forke [das Übungsrepository](https://github.com/FlixFix/sqs_grande_finale) und klone deinen Fork lokal auf deinen Rechner.
 
-```bash
+```shell
 git clone https://github.com/DEIN_GITHUB_BENUTZERNAME/sqs_grande_finale.git
 cd sqs_grande_finale
 ```
 
 2. Lege ein Verzeichnis `docs/` für die Dokumentation an:
 
-```bash
+```shell
 mkdir docs
 cd docs
 ```
@@ -27,13 +27,13 @@ cd docs
 
 1. Installiere Sphinx:
 
-```bash
+```shell
 pip install sphinx
 ```
 
 ### Schritt 3: Sphinx Quickstart ausführen
 
-```bash
+```shell
 sphinx-quickstart
 ```
 
@@ -50,7 +50,7 @@ Ergebnis: Es werden `conf.py`, `index.rst`, `Makefile` usw. erstellt.
 
 ### Schritt 4: Erste Dokumentation erzeugen
 
-```bash
+```shell
 make html
 ```
 
@@ -80,7 +80,7 @@ furo
 
 Dann lokal installieren:
 
-```bash
+```shell
 pip install -r requirements.txt
 ```
 
@@ -93,15 +93,22 @@ html_theme = 'furo'
 und baue dann alles erneut:
 
 
-```bash
+```shell
 make html
 ```
 
 
 ### Schritt 5: Index-Datei anpassen
 
-Standardmäßig verwendet sphinx rst-Files. Du kannst aber auch einfach markdown-Files oder auch beides gleichzeitig verwenden. Damit sphinx markdown parsen kann, musst du den markdown-parser noch in `docs/conf.py` einbinden. Füge dazu folgenden Eintrag unter extensions hinzu:
+Standardmäßig verwendet sphinx rst-Files. Du kannst aber auch einfach markdown-Files oder auch beides gleichzeitig verwenden.
 
+Hierzu installieren wir das Paket `myst-parser`, indem wir die Zeile in der `requirements.txt` einfügen und dann noch einmal ausführen:
+
+```shell
+pip install -r requirements.txt
+```
+
+Damit sphinx markdown parsen kann, musst du den markdown-parser noch in `docs/conf.py` einbinden. Füge dazu folgenden Eintrag in der Konfigurationsdatei unter `extensions` hinzu:
 
 ```
 extensions = [
@@ -110,6 +117,8 @@ extensions = [
 
 ```
 
+Ändere jetzt die `index.rst` in `index.md`. Baue dann alles erneut mit ```make html``` - die Startseite der Dokumentation sollte nach wie vor richtig dargestellt werden. Eventuell musst du einzelne Einträge wie bpsw. das Inhaltsverzeichnis noch für markdown anpassen.
+
 ## Aufgabe 2: Dokumentation mit Read the Docs verbinden
 
 ### Schritt 1: Read the Docs verbinden
@@ -117,9 +126,13 @@ extensions = [
 1. Gehe auf [https://readthedocs.org](https://readthedocs.org) und erstelle einen Account.
 2. Verbinde dein GitHub-Konto mit Read the Docs.
 3. Klicke auf "Import a Project" und wähle dein Repository aus.
-4. Read the Docs erkennt automatisch `conf.py` in `docs/` und baut deine Dokumentation.
+4. Folge dann den Schritten zum Verbinden des Repositories und lege dir die `.readthedocs.yaml` an
+5. Gepusht werden müssen: `.readthedocs.yaml`, `conf.py`, `requirements.txt` und mindestens alle Dokumentationsfiles und .md or .rst
+6. Damit du dein repository nicht mit build-files zumüllst, stelle sicher, dass der Ordner `docs/_build` in `.gitignore` auftaucht
+7. Nachdem du alles gepusht hast, erkennt automatisch `conf.py` in `docs/` und baut deine Dokumentation.
+8. Dies kannst du auch noch einmal in den Build-Logs von ReadTheDocs überprüfen
 
-Projektseite z. B.: `https://dein-projekt.readthedocs.io/en/latest/`
+Projektseite auf ReadTheDocs ist dann z. B.: `https://dein-projekt.readthedocs.io/en/latest/`
 
 ## Zusatzaufgabe 3: OpenAPI-Dokumentation integrieren
 
@@ -130,14 +143,16 @@ Wenn dein Backend z. B. mit Spring Boot (wie hier im Beispielprojekt) arbeitet u
 Baue und starte also zuerst die Anwendung im Ordner `playwright_2`:
 
 ```shell
-cd playwright_2
+cd ../playwright_2
 mvn clean install -DskipTests
+cd backend
 docker compose up -d
 ```
 
 Danach solltest du die Anwendung bspw. über IntelliJ oder die Konsole starten können. Lasse dir dann mit folgenden Befehl die OpenAPI Spec generieren:
 
-```bash
+```shell
+cd ../..
 curl http://localhost:8080/v3/api-docs.yaml -o docs/openapi.yaml
 ```
 
@@ -151,7 +166,7 @@ sphinxcontrib-openapi
 
 Dann lokal installieren:
 
-```bash
+```shell
 pip install -r requirements.txt
 ```
 
@@ -192,21 +207,30 @@ Bearbeite `docs/index.md`:
 api.rst
 ```
 
-### Schritt 6: Alles lokal prüfen
+### Schritt 5: Alles lokal prüfen
 
 Wenn du nun die folgenden Befehle ausführst, solltest du deine OpenAPI Spezifikation lokal im Browser sehen können:
 
-```bash
+```shell
 make html
 open _build/html/index.html # oder xdg_open oder start, je nach Betriebssystem
 ```
 
-### Schritt 5: Commit und Push
+Recap: Am Ende **sollte** die `requirements.txt` diese Einträge enthalten:
 
-```bash
-git add docs/openapi.yaml docs/api.rst docs/index.md
+```shell
+sphinx
+furo
+myst-parser
+sphinxcontrib-openapi
+```
+
+### Schritt 6: Commit und Push
+
+```shell
+git add docs/openapi.yaml docs/api.rst docs/index.md docs/requirements.txt
 git commit -m "OpenAPI-Dokumentation hinzugefügt"
 git push
 ```
 
-Read the Docs baut beim nächsten Push die aktualisierte Dokumentation.
+Read the Docs baut beim nächsten Push die aktualisierte Dokumentation.  
