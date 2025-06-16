@@ -68,6 +68,13 @@ Baut zu Beginn die gesamte Anwendung, indem ihr im Root-Verzeichnis des Reposito
 mvn clean install -DskipTests
 ```
 
+Im Frontend müsst ihr zusätzlich noch einmal:
+ ```shell
+ npm install
+ npm run build
+ ```
+ausführen. Dies installiert die Dependencies und generiert euch den Client für euer Backend basierend auf der OpenAPI Spezifikation.
+
 ### Backend & Frontend starten
 
 Nutzt IntelliJ oder eure Konsole, um das Backend im Ordner `backend/SqsTestingApplication.jar` zu starten (Wichtig: Damit das Backend läuft, müssen auch die Docker-Container im docker-compose.yaml im backend Modul laufen). Started danach das Frontend, indem ihr im Ordner `frontend` den folgenden Befehl ausführt:
